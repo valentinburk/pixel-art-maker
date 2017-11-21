@@ -1,3 +1,4 @@
+/* Main section */
 body {
     font-family: 'Open Sans', sans-serif;
     text-align: center;
@@ -41,15 +42,17 @@ td {
     background-color: #fff;
     transition: all .2s;
 }
-  td:hover {
-    background-color: #bbb;
-  }
+
+td:hover {
+  background-color: #bbb;
+}
 
 input[type=number] {
     width: 6em;
 }
 
-input, button {
+input,
+button {
   padding: 10px 20px 10px 20px;
   font-size: inherit;
   border: 0;
@@ -57,20 +60,28 @@ input, button {
 
 button {
   color: #ffffff;
-  background: #3498db;
+  background-color: #3498db;
   text-decoration: none;
+  font-family: inherit;
 }
 
 button:hover {
-  background: #3cb0fd;
-  text-decoration: none;
+  background-color: #3cb0fd;
 }
 
-#layout {
-  margin-bottom: 100px;
+ul {
+  list-style-type: none;
+  padding: 0;
 }
 
-#footer {
+li:before {
+  content: "\f00c";
+  font-family: 'FontAwesome';
+  display: inline-block;
+  margin-right: 10px;
+}
+
+footer {
   position: fixed;
   bottom: 0;
   padding: 20px;
@@ -79,35 +90,28 @@ button:hover {
   right: 0;
 }
 
-.rules, .show-rules {
+#layout {
+  margin-bottom: 100px;
+}
+
+.instructions,
+.instructions-toggle {
   position: fixed;
   top: 0;
   right: 0;
   text-align: left;
 }
 
-.rules {
+.instructions {
   padding: 10px 30px;
   background-color: #fff;
 }
 
-.show-rules {
+.instructions-toggle {
   right: 30px;
   color: #bbb;
   cursor: pointer;
 }
-
-  .rules ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-    .rules ul li:before {
-      content: "\f00c";
-      font-family: FontAwesome;
-      display: inline-block;
-      margin-right: 10px;
-    }
 
 .main-feature {
   color: #3498db;
@@ -122,6 +126,7 @@ button:hover {
   display: inline-block;
 }
 
+/* External plugins adjustments */
 .farbtastic {
   margin: 20px auto;
 }

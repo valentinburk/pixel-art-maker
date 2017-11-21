@@ -15,13 +15,16 @@
 </head>
 <body>
     <h1>Pixel Art Maker</h1>
-    <div id="show-rules" class="show-rules">
+
+    <!-- Button for open the instructions -->
+    <div id="show-instructions" class="instructions-toggle">
       <h1>?</h1>
     </div>
 
-    <div id="rules" class="rules" style="display: none;">
-      <h2>Rules</h2>
-      <div id="close-rules" class="show-rules">
+    <!-- Instructions section -->
+    <div id="instructions" class="instructions" style="display: none;">
+      <h2>Instructions</h2>
+      <div id="close-instructions" class="instructions-toggle">
         <h2><i class="fa fa-times icon" aria-hidden="true"></i></h2>
       </div>
       <ul>
@@ -34,6 +37,7 @@
       </ul>
     </div>
 
+    <!-- Grid set up section -->
     <div id="setup">
         <h2>Choose Grid Size</h2>
         <form id="size-picker">
@@ -52,6 +56,7 @@
         </form>
     </div>
 
+    <!-- Drawing area section -->
     <div id="layout" style="display: none;">
         <h2>Pick A Color</h2>
         <div id="color-picker"></div>
@@ -60,12 +65,13 @@
         <table id="pixel-canvas"></table>
     </div>
 
-    <div id="footer">
+    <!-- Footer section with buttons -->
+    <footer>
       <div id="control-buttons" style="display: none;">
         <button id="clear">Clear Canvas</button>
         <button id="reset">Start New</button>
       </div>
-    </div>
+    </footer>
 
     <script src="designs.js"></script>
 </body>
