@@ -1,78 +1,81 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Pixel Art Maker!</title>
+  <title>Pixel Art Maker!</title>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <link href="styles.css"rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-    <!-- Farbstastic Color Picker -->
-    <link href="farbtastic/farbtastic.css"rel="stylesheet">
-    <script src="farbtastic/farbtastic.js"></script>
+  <!-- Farbstastic Color Picker -->
+  <link href="farbtastic/farbtastic.css" rel="stylesheet">
+  <script src="farbtastic/farbtastic.js"></script>
 </head>
+
 <body>
-    <h1>Pixel Art Maker</h1>
+  <h1>Pixel Art Maker</h1>
 
-    <!-- Button for open the instructions -->
-    <div id="show-instructions" class="instructions-toggle">
-      <h1>?</h1>
+  <!-- Button for open the instructions -->
+  <div id="show-instructions" class="instructions-toggle">
+    <h1>?</h1>
+  </div>
+
+  <!-- Instructions section -->
+  <div id="instructions" class="instructions" style="display: none;">
+    <h2>Instructions</h2>
+    <div id="close-instructions" class="instructions-toggle">
+      <h2><i class="fa fa-times icon" aria-hidden="true"></i></h2>
     </div>
+    <ul>
+      <li>Set size of canvas</li>
+      <li>Pick the color</li>
+      <li>Click to fill the cell with selected color</li>
+      <li class="main-feature">Hold mouse down and draw smoothly</li>
+      <li>Click secondary mouse button to erase</li>
+      <li class="main-feature">Hold secondary button to erase smoothly</li>
+    </ul>
+  </div>
 
-    <!-- Instructions section -->
-    <div id="instructions" class="instructions" style="display: none;">
-      <h2>Instructions</h2>
-      <div id="close-instructions" class="instructions-toggle">
-        <h2><i class="fa fa-times icon" aria-hidden="true"></i></h2>
+  <!-- Grid set up section -->
+  <div id="setup">
+    <h2>Choose Grid Size</h2>
+    <form id="size-picker">
+      <div class="grid-parameter">
+        <h4>Height</h4>
+        <input type="number" id="input-height" name="height" min="1" value="20">
       </div>
-      <ul>
-        <li>Set size of canvas</li>
-        <li>Pick the color</li>
-        <li>Click to fill the cell with selected color</li>
-        <li class="main-feature">Hold mouse down and draw smoothly</li>
-        <li>Click secondary mouse button to erase</li>
-        <li class="main-feature">Hold secondary button to erase smoothly</li>
-      </ul>
-    </div>
-
-    <!-- Grid set up section -->
-    <div id="setup">
-        <h2>Choose Grid Size</h2>
-        <form id="size-picker">
-            <div class="grid-parameter">
-                <h4>Height</h4>
-                <input type="number" id="input-height" name="height" min="1" value="20">
-            </div>
-            <i class="fa fa-times icon" aria-hidden="true"></i>
-            <div class="grid-parameter">
-                <h4>Width</h4>
-                <input type="number" id="input-width" name="width" min="1" value="40">
-            </div>
-            <p>
-                <button type="submit">Submit</button>
-            </p>
-        </form>
-    </div>
-
-    <!-- Drawing area section -->
-    <div id="layout" style="display: none;">
-        <h2>Pick A Color</h2>
-        <div id="color-picker"></div>
-
-        <h2>Design Canvas</h2>
-        <table id="pixel-canvas"></table>
-    </div>
-
-    <!-- Footer section with buttons -->
-    <footer>
-      <div id="control-buttons" style="display: none;">
-        <button id="clear">Clear Canvas</button>
-        <button id="reset">Start New</button>
+      <i class="fa fa-times icon" aria-hidden="true"></i>
+      <div class="grid-parameter">
+        <h4>Width</h4>
+        <input type="number" id="input-width" name="width" min="1" value="40">
       </div>
-    </footer>
+      <p>
+        <button type="submit">Submit</button>
+      </p>
+    </form>
+  </div>
 
-    <script src="designs.js"></script>
+  <!-- Drawing area section -->
+  <div id="layout" style="display: none;">
+    <h2>Pick A Color</h2>
+    <div id="color-picker"></div>
+
+    <h2>Design Canvas</h2>
+    <table id="pixel-canvas"></table>
+  </div>
+
+  <!-- Footer section with buttons -->
+  <footer>
+    <div id="control-buttons" style="display: none;">
+      <button id="clear">Clear Canvas</button>
+      <button id="reset">Start New</button>
+    </div>
+  </footer>
+
+  <script src="designs.js"></script>
 </body>
+
 </html>

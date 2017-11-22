@@ -1,7 +1,6 @@
-$(function(){
+$(function() {
   // Constants
   const FADE_DURATION = 300;
-  const DEFAULT_COLOR = '#fff';
 
   // Current Color
   let currentColor = '#3498db';
@@ -22,19 +21,10 @@ $(function(){
   let resetButton = $('#reset');
 
   /**
-  * @description Sets color of element in the canvas
-  * @param {object} element - The object to set color on
-  * @param {string} color - Hexadecimal value of the color to set
-  */
-  function setColor(element, color){
-    $(element).css('background-color', color);
-  };
-
-  /**
-  * @description Draws the canvas using provided parameters
-  * @param {int} height - The height of the canvas
-  * @param {int} width - The width of the canvas
-  */
+   * @description Draws the canvas using provided parameters
+   * @param {int} height - The height of the canvas
+   * @param {int} width - The width of the canvas
+   */
   function makeGrid(height, width) {
     color.farbtastic(function(e) {
       currentColor = e;
@@ -58,11 +48,20 @@ $(function(){
   };
 
   /**
-  * @description Resets color of all cells
-  */
+   * @description Sets color of element in the canvas
+   * @param {object} element - The object to set color on
+   * @param {string} color - Hexadecimal value of the color to set
+   */
+  function setColor(element, color) {
+    $(element).css('background-color', color);
+  };
+
+  /**
+   * @description Resets color of all cells
+   */
   function clearCanvas() {
     canvas.find('td').each(function() {
-      setColor(this, DEFAULT_COLOR);
+      setColor(this, '');
     })
   };
 
@@ -85,6 +84,12 @@ $(function(){
     setColor(this, currentColor);
   })
 
+  // Reset color by right click
+  canvas.on('contextmenu', 'td', function(e) {
+    e.preventDefault();
+    setColor(this, '');
+  });
+
   // This function is used for possibility to draw
   // smoothly on the canvas with a single mouse hold
   // Reset color by moving cursor with right button down
@@ -92,20 +97,13 @@ $(function(){
     e.preventDefault();
     if (e.buttons == 1 || e.buttons == 3) {
       setColor(this, currentColor);
+    } else if (e.buttons == 2) {
+      setColor(this, '');
     }
-    else if (e.buttons == 2) {
-      setColor(this, DEFAULT_COLOR);
-    }
-  });
-
-  // Reset color by right click
-  canvas.on('contextmenu', 'td', function(e) {
-    e.preventDefault();
-    setColor(this, DEFAULT_COLOR);
   });
 
   // Apply canvas size set by user
-  form.submit(function(e){
+  form.submit(function(e) {
     e.preventDefault();
 
     // Remember values of canvas parameters
