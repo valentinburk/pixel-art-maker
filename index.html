@@ -36,6 +36,7 @@
       <li class="main-feature">Hold mouse down and draw smoothly</li>
       <li>Click secondary mouse button to erase</li>
       <li class="main-feature">Hold secondary button to erase smoothly</li>
+      <li class="main-feature">NEW! Save your drawings to PNG image</li>
     </ul>
   </div>
 
@@ -53,7 +54,7 @@
         <input type="number" id="input-width" name="width" min="1" value="40">
       </div>
       <p>
-        <button type="submit">Submit</button>
+        <button type="submit" class="button button-default">Submit</button>
       </p>
     </form>
   </div>
@@ -64,14 +65,15 @@
     <div id="color-picker"></div>
 
     <h2>Design Canvas</h2>
-    <table id="pixel-canvas"></table>
+    <table id="pixel-grid"></table>
   </div>
 
   <!-- Footer section with buttons -->
   <footer>
     <div id="control-buttons" style="display: none;">
-      <button id="clear">Clear Canvas</button>
-      <button id="reset">Start New</button>
+      <a id="clear" class="button button-default">Clear Canvas</a>
+      <a id="reset" class="button button-default">Start New</a>
+      <a id="save" class="button button-save">Save Picture</a>
     </div>
   </footer>
 

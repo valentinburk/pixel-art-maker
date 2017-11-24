@@ -23,7 +23,9 @@ h4 {
   margin: 5px 0;
 }
 
-table, tr, td {
+table,
+tr,
+td {
   border: 1px solid #bbb;
 }
 
@@ -53,27 +55,17 @@ input[type=number] {
   text-align: center;
   font-family: inherit;
   font-size: 45px;
+  -moz-appearance: textfield;
 }
 
+input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
-input, button {
+input {
   font-size: inherit;
   border: 0;
-}
-
-button {
-  padding: 10px 20px 10px 20px;
-  color: #ffffff;
-  background-color: #3498db;
-  text-decoration: none;
-  font-family: inherit;
-}
-
-button:hover {
-  background-color: #3cb0fd;
 }
 
 ul {
@@ -101,7 +93,8 @@ footer {
   margin-bottom: 100px;
 }
 
-.instructions, .instructions-toggle {
+.instructions,
+.instructions-toggle {
   position: fixed;
   top: 0;
   right: 0;
@@ -131,6 +124,34 @@ footer {
 
 .grid-parameter {
   display: inline-block;
+}
+
+/* Buttons */
+
+.button {
+  padding: 10px 20px 10px 20px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  border: 0;
+  text-decoration: none;
+}
+
+.button-default {
+  background-color: #3498db;
+}
+
+.button-default:hover {
+  background-color: #3cb0fd;
+}
+
+.button-save {
+  background-color: #00AE63;
+}
+
+.button-save:hover {
+  background-color: #03D77C;
 }
 
 /* External plugins adjustments */

@@ -1,24 +1,32 @@
 $(function() {
   // Constants
   const FADE_DURATION = 300;
+  const MIN_GRID_SIDE = 2;
+  const MAX_GRID_SIDE = 100;
+  const IMG_CELL_SIDE = 20;
 
   // Current Color
   let currentColor = '#3498db';
+
+  // Grid size;
+  let height;
+  let width;
 
   // Page elements
   let setup = $('#setup');
   let layout = $('#layout');
   let buttons = $('#control-buttons');
   let form = $('#size-picker');
-  let canvas = $('#pixel-canvas');
+  let grid = $('#pixel-grid');
   let color = $('#color-picker');
 
-  let showRules = $("#show-instructions");
-  let closeRules = $("#close-instructions");
-  let rules = $("#instructions");
+  let showInstructions = $("#show-instructions");
+  let closeInstructions = $("#close-instructions");
+  let instructions = $("#instructions");
 
   let clearButton = $('#clear');
   let resetButton = $('#reset');
+  let saveButton = $('#save');
 
   /**
    * @description Draws the canvas using provided parameters
@@ -38,7 +46,7 @@ $(function() {
         tr.append('<td></td');
       }
 
-      canvas.append(tr);
+      grid.append(tr);
     }
 
     setup.fadeOut(FADE_DURATION, function() {
@@ -59,33 +67,68 @@ $(function() {
   /**
    * @description Resets color of all cells
    */
-  function clearCanvas() {
-    canvas.find('td').each(function() {
+  function clearGrid() {
+    grid.find('td').each(function() {
       setColor(this, '');
     })
   };
 
+  /**
+   * @description Draws grid <table> html element to <canvas> html element
+   * @param {object} table - JSON object representing grid state
+   * @returns {node} - Returns the canvas element
+   */
+  function drawCanvasFromTable(table) {
+    let canvas = document.createElement('canvas');
+    canvas.height = table.height * IMG_CELL_SIDE;
+    canvas.width = table.width * IMG_CELL_SIDE;
+
+    let ctx = canvas.getContext('2d');
+
+    let position = 0;
+    for (let h = 0; h < table.height; h++) {
+      for (let w = 0; w < table.width; w++) {
+        ctx.fillStyle = table.colors[position++];
+        ctx.fillRect(w * IMG_CELL_SIDE, h * IMG_CELL_SIDE, IMG_CELL_SIDE, IMG_CELL_SIDE);
+      }
+    }
+
+    return canvas;
+  };
+
+  /**
+   * @description Downloads the png from <canvas> html element
+   * @param {node} canvas - <canvas> html element
+   * @param {string} filename - Name of the file that will be downloaded
+   */
+  function downloadImageFromCanvas(canvas, fileName) {
+    let dataURL = canvas.toDataURL();
+    let download = document.getElementById('save');
+    download.href = dataURL;
+    download.download = fileName;
+  };
+
   // Listen event to show instructions
-  showRules.on('click', function() {
-    showRules.fadeOut(FADE_DURATION / 2, function() {
-      rules.fadeIn(FADE_DURATION / 2);
+  showInstructions.on('click', function() {
+    showInstructions.fadeOut(FADE_DURATION / 2, function() {
+      instructions.fadeIn(FADE_DURATION / 2);
     })
   });
 
   // Listen event to hide instructions
-  closeRules.on('click', function() {
-    rules.fadeOut(FADE_DURATION / 2, function() {
-      showRules.fadeIn(FADE_DURATION / 2);
+  closeInstructions.on('click', function() {
+    instructions.fadeOut(FADE_DURATION / 2, function() {
+      showInstructions.fadeIn(FADE_DURATION / 2);
     })
   });
 
   // Set color by click
-  canvas.on('click', 'td', function() {
+  grid.on('click', 'td', function(e) {
     setColor(this, currentColor);
   })
 
   // Reset color by right click
-  canvas.on('contextmenu', 'td', function(e) {
+  grid.on('contextmenu', 'td', function(e) {
     e.preventDefault();
     setColor(this, '');
   });
@@ -93,7 +136,7 @@ $(function() {
   // This function is used for possibility to draw
   // smoothly on the canvas with a single mouse hold
   // Reset color by moving cursor with right button down
-  canvas.on('mousemove', 'td', function(e) {
+  grid.on('mousemove', 'td', function(e) {
     e.preventDefault();
     if (e.buttons == 1 || e.buttons == 3) {
       setColor(this, currentColor);
@@ -107,13 +150,18 @@ $(function() {
     e.preventDefault();
 
     // Remember values of canvas parameters
-    let height = $('#input-height').val();
-    let width = $('#input-width').val();
+    height = $('#input-height').val();
+    width = $('#input-width').val();
 
     // Alert if the canvas is too small
-    if (height < 2 || width < 2) {
-      alert('Canvas size must be at least 2x2');
+    if (height < MIN_GRID_SIDE || width < MIN_GRID_SIDE) {
+      alert('Each canvas side size must be at least 2');
       return;
+    }
+
+    if (height > MAX_GRID_SIDE || width > MAX_GRID_SIDE) {
+      alert('Each side of canvas is limited to 100');
+      return
     }
 
     // Apply
@@ -122,7 +170,7 @@ $(function() {
 
   // Clear the drawing area
   clearButton.on('click', function() {
-    clearCanvas();
+    clearGrid();
   });
 
   // Delete current drawing area and let user to
@@ -130,8 +178,25 @@ $(function() {
   resetButton.on('click', function() {
     buttons.fadeOut(FADE_DURATION);
     layout.fadeOut(FADE_DURATION, function() {
-      canvas.children().remove();
+      grid.children().remove();
       setup.fadeIn(FADE_DURATION);
     });
+  });
+
+  saveButton.on('click', function() {
+    let colors = [];
+
+    $.each(grid.find('td'), function(index, cell) {
+      colors.push($(cell).css('background-color'));
+    });
+
+    let table = {
+      height: height,
+      width: width,
+      colors: colors
+    }
+
+    let canvas = drawCanvasFromTable(table);
+    downloadImageFromCanvas(canvas, 'image.png');
   });
 });
