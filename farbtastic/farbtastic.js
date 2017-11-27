@@ -311,6 +311,14 @@ jQuery._farbtastic = function (container, callback) {
     return m1;
   }
 
+  fb.rgbaToHex = function (rgb) {
+	rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+      ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+      ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+      ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+  }
+
   fb.RGBToHSL = function (rgb) {
     var min, max, delta, h, s, l;
     var r = rgb[0], g = rgb[1], b = rgb[2];
@@ -336,10 +344,12 @@ jQuery._farbtastic = function (container, callback) {
   $('*', e).mousedown(fb.mousedown);
 
     // Init color
-  fb.setColor('#3498db');
+  fb.setColor('#fff');
 
   // Set linked elements/callback
   if (callback) {
     fb.linkTo(callback);
   }
+
+  return fb;
 }

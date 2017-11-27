@@ -154,6 +154,18 @@ footer {
   background-color: #03D77C;
 }
 
+.palette {
+  display: inline-table;
+  border-spacing: 5px;
+}
+
+.palette-item {
+  display: table-cell;
+  width: 30px;
+  height: 30px;
+  background-color: #3498db;
+}
+
 /* External plugins adjustments */
 
 .farbtastic {

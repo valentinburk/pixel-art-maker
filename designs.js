@@ -4,9 +4,14 @@ $(function() {
   const MIN_GRID_SIDE = 2;
   const MAX_GRID_SIDE = 100;
   const IMG_CELL_SIDE = 20;
+  const MAX_PALETTE_SIZE = 15;
 
-  // Current Color
-  let currentColor = '#3498db';
+  const DEFAULT_COLOR = '#3498db';
+  const PLACEHOLDER_COLOR = '#e1e1e1';
+
+  // Palette
+  let currentColor;
+  let paletteArray;
 
   // Grid size;
   let height;
@@ -19,6 +24,7 @@ $(function() {
   let form = $('#size-picker');
   let grid = $('#pixel-grid');
   let color = $('#color-picker');
+  let palette = $('#palette');
 
   let showInstructions = $("#show-instructions");
   let closeInstructions = $("#close-instructions");
@@ -48,11 +54,6 @@ $(function() {
 
       grid.append(tr);
     }
-
-    setup.fadeOut(FADE_DURATION, function() {
-      layout.fadeIn(FADE_DURATION);
-      buttons.fadeIn(FADE_DURATION);
-    });
   };
 
   /**
@@ -63,6 +64,51 @@ $(function() {
   function setColor(element, color) {
     $(element).css('background-color', color);
   };
+
+  /**
+  * @description Updates palette of recent colors
+  * @param {string} color - Hexadecimal color
+  */
+  function updatePalette(color) {
+    // Only if color is not in palette yet
+    if (!paletteArray.includes(color)) {
+      // Add color to the end of the palette
+      paletteArray.push(color);
+
+      // Delete the last element if more than maximum
+      if (paletteArray.length > MAX_PALETTE_SIZE) {
+        paletteArray.splice(0, 1);
+      }
+
+      // Clear the palette and fill with updated colors
+      palette.children().remove();
+      paletteArray.forEach(function(e) {
+        let item = $('<div class="palette-item"></div>');
+        item.css('background-color', e);
+        palette.append(item);
+      });
+    }
+  }
+
+  /**
+  * @description Clears the palette
+  */
+  function clearPalette() {
+    // Set active color to default
+    currentColor = DEFAULT_COLOR;
+    $._farbtastic().setColor(DEFAULT_COLOR);
+
+    // Clear palette
+    paletteArray = [];
+    palette.children().remove();
+    for (var i = 0; i < MAX_PALETTE_SIZE; i++) {
+      paletteArray.push(PLACEHOLDER_COLOR);
+
+      let item = $('<div class="palette-item"></div>');
+      item.css('background-color', PLACEHOLDER_COLOR);
+      palette.append(item);
+    }
+  }
 
   /**
    * @description Resets color of all cells
@@ -125,6 +171,7 @@ $(function() {
   // Set color by click
   grid.on('click', 'td', function(e) {
     setColor(this, currentColor);
+    updatePalette(currentColor);
   })
 
   // Reset color by right click
@@ -140,6 +187,7 @@ $(function() {
     e.preventDefault();
     if (e.buttons == 1 || e.buttons == 3) {
       setColor(this, currentColor);
+      updatePalette(currentColor);
     } else if (e.buttons == 2) {
       setColor(this, '');
     }
@@ -164,8 +212,17 @@ $(function() {
       return
     }
 
+    // Clear existing palette if any and reset active color to default
+    clearPalette();
+
     // Apply
     makeGrid(height, width);
+
+    // Adjust view
+    setup.fadeOut(FADE_DURATION, function() {
+      layout.fadeIn(FADE_DURATION);
+      buttons.fadeIn(FADE_DURATION);
+    });
   });
 
   // Clear the drawing area
@@ -183,6 +240,8 @@ $(function() {
     });
   });
 
+  // Listen event click on save button
+  // And save picture to png
   saveButton.on('click', function() {
     let colors = [];
 
@@ -198,5 +257,17 @@ $(function() {
 
     let canvas = drawCanvasFromTable(table);
     downloadImageFromCanvas(canvas, 'image.png');
+  });
+
+  // Pick color from palette
+  palette.on('click', 'div', function(e) {
+    let color = $(e.target).css('background-color');
+    let hex = $._farbtastic().rgbaToHex(color);
+
+    // Set active color
+    currentColor = hex;
+
+    // Update color picker
+    $._farbtastic().setColor(hex);
   });
 });
