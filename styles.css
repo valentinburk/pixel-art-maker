@@ -164,6 +164,7 @@ footer {
   width: 30px;
   height: 30px;
   background-color: #3498db;
+  cursor: pointer;
 }
 
 /* External plugins adjustments */
