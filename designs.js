@@ -33,19 +33,37 @@ $(function() {
   let clearButton = $('#clear');
   let resetButton = $('#reset');
   let saveButton = $('#save');
+  let shareButton = $('#share');
+  let loadButton = $('#load');
+
+  let ser;
+
+  /**
+   * @description Initializes working space. Must be called before any other calls
+   */
+  function init() {
+    // Clears everything from any previous grid
+    grid.children().remove();
+
+    // Set active color to default
+    currentColor = DEFAULT_COLOR;
+
+    // Initialize farbtastic
+    color.farbtastic(function(e) {
+      currentColor = e;
+    }, DEFAULT_COLOR);
+
+    // Clear existing palette if any and reset active color to default
+    clearPalette();
+  }
 
   /**
    * @description Draws the canvas using provided parameters
    * @param {int} height - The height of the canvas
    * @param {int} width - The width of the canvas
    */
-  function makeGrid(height, width) {
-    color.farbtastic(function(e) {
-      currentColor = e;
-    }, DEFAULT_COLOR);
-
-    let h = 0;
-    while (h++ < height) {
+  function makeGrid(height, width, callback) {
+    for (let h = 0; h < height; h++) {
       var tr = $('<tr></tr>');
 
       for (let w = 0; w < width; w++) {
@@ -54,6 +72,8 @@ $(function() {
 
       grid.append(tr);
     }
+
+    callback();
   };
 
   /**
@@ -66,10 +86,10 @@ $(function() {
   };
 
   /**
-  * @description Updates palette of recent colors
-  * @param {string} color - Hexadecimal color
-  */
-  function updatePalette(color) {
+   * @description Updates palette of recent colors
+   * @param {string} color - Hexadecimal color
+   */
+  function addColorToPalette(color) {
     // Only if color is not in palette yet
     if (!paletteArray.includes(color)) {
       // Add color to the end of the palette
@@ -91,11 +111,9 @@ $(function() {
   }
 
   /**
-  * @description Clears the palette
-  */
+   * @description Clears the palette
+   */
   function clearPalette() {
-    // Set active color to default
-    currentColor = DEFAULT_COLOR;
     $.farbtastic(color, DEFAULT_COLOR).setColor(DEFAULT_COLOR);
 
     // Clear palette
@@ -120,10 +138,10 @@ $(function() {
   };
 
   /**
-  * @description Serializes <table> html element to JSON object
-  * @param {object} - <table> html element
-  * @returns {object} - Returns <table> serialized to JSON object
-  */
+   * @description Serializes <table> html element to JSON object
+   * @param {object} - <table> html element
+   * @returns {object} - Returns <table> serialized to JSON object
+   */
   function serializeTable(table) {
     let colors = [];
 
@@ -138,6 +156,27 @@ $(function() {
     };
 
     return serialized;
+  }
+
+  /**
+   * @description Deserializes JSON object into <table> html element
+   * @param {object} - JSON object containing serialized <table>
+   */
+  function deserializeTable(serialized) {
+    init();
+    makeGrid(serialized.height, serialized.width, function() {
+
+      $.each($('#pixel-grid td'), function(i) {
+        addColorToPalette(serialized.colors[i]);
+        $(this).css('background-color', serialized.colors[i]);
+      })
+
+      // Adjust view
+      setup.fadeOut(FADE_DURATION, function() {
+        layout.fadeIn(FADE_DURATION);
+        buttons.fadeIn(FADE_DURATION);
+      });
+    });
   }
 
   /**
@@ -194,7 +233,7 @@ $(function() {
   // Set color by click
   grid.on('click', 'td', function(e) {
     setColor(this, currentColor);
-    updatePalette(currentColor);
+    addColorToPalette(currentColor);
   })
 
   // Reset color by right click
@@ -210,7 +249,7 @@ $(function() {
     e.preventDefault();
     if (e.buttons == 1 || e.buttons == 3) {
       setColor(this, currentColor);
-      updatePalette(currentColor);
+      addColorToPalette(currentColor);
     } else if (e.buttons == 2) {
       setColor(this, '');
     }
@@ -219,6 +258,8 @@ $(function() {
   // Apply canvas size set by user
   form.submit(function(e) {
     e.preventDefault();
+
+    init();
 
     // Remember values of canvas parameters
     height = $('#input-height').val();
@@ -236,15 +277,12 @@ $(function() {
     }
 
     // Apply
-    makeGrid(height, width);
-
-    // Clear existing palette if any and reset active color to default
-    clearPalette();
-
-    // Adjust view
-    setup.fadeOut(FADE_DURATION, function() {
-      layout.fadeIn(FADE_DURATION);
-      buttons.fadeIn(FADE_DURATION);
+    makeGrid(height, width, function() {
+      // Adjust view
+      setup.fadeOut(FADE_DURATION, function() {
+        layout.fadeIn(FADE_DURATION);
+        buttons.fadeIn(FADE_DURATION);
+      });
     });
   });
 
@@ -258,7 +296,6 @@ $(function() {
   resetButton.on('click', function() {
     buttons.fadeOut(FADE_DURATION);
     layout.fadeOut(FADE_DURATION, function() {
-      grid.children().remove();
       setup.fadeIn(FADE_DURATION);
     });
   });
@@ -269,6 +306,16 @@ $(function() {
     let canvas = getCanvasFromTable(grid);
     saveCanvasToImage(canvas, 'image.png');
   });
+
+  shareButton.on('click', function() {
+    ser = serializeTable(grid);
+    resetButton.click();
+  })
+
+  loadButton.on('click', function(e) {
+    e.preventDefault();
+    deserializeTable(ser);
+  })
 
   // Pick color from palette
   palette.on('click', 'div', function(e) {
