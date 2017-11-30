@@ -42,7 +42,7 @@ $(function() {
   function makeGrid(height, width) {
     color.farbtastic(function(e) {
       currentColor = e;
-    });
+    }, DEFAULT_COLOR);
 
     let h = 0;
     while (h++ < height) {
@@ -96,7 +96,7 @@ $(function() {
   function clearPalette() {
     // Set active color to default
     currentColor = DEFAULT_COLOR;
-    $._farbtastic().setColor(DEFAULT_COLOR);
+    $.farbtastic(color, DEFAULT_COLOR).setColor(DEFAULT_COLOR);
 
     // Clear palette
     paletteArray = [];
@@ -120,21 +120,44 @@ $(function() {
   };
 
   /**
+  * @description Serializes <table> html element to JSON object
+  * @param {object} - <table> html element
+  * @returns {object} - Returns <table> serialized to JSON object
+  */
+  function serializeTable(table) {
+    let colors = [];
+
+    $.each(table.find('td'), function(index, cell) {
+      colors.push($(cell).css('background-color'));
+    });
+
+    let serialized = {
+      height: height,
+      width: width,
+      colors: colors
+    };
+
+    return serialized;
+  }
+
+  /**
    * @description Draws grid <table> html element to <canvas> html element
    * @param {object} table - JSON object representing grid state
    * @returns {node} - Returns the canvas element
    */
-  function drawCanvasFromTable(table) {
+  function getCanvasFromTable(table) {
+    let serialized = serializeTable(table);
+
     let canvas = document.createElement('canvas');
-    canvas.height = table.height * IMG_CELL_SIDE;
-    canvas.width = table.width * IMG_CELL_SIDE;
+    canvas.height = serialized.height * IMG_CELL_SIDE;
+    canvas.width = serialized.width * IMG_CELL_SIDE;
 
     let ctx = canvas.getContext('2d');
 
     let position = 0;
-    for (let h = 0; h < table.height; h++) {
-      for (let w = 0; w < table.width; w++) {
-        ctx.fillStyle = table.colors[position++];
+    for (let h = 0; h < serialized.height; h++) {
+      for (let w = 0; w < serialized.width; w++) {
+        ctx.fillStyle = serialized.colors[position++];
         ctx.fillRect(w * IMG_CELL_SIDE, h * IMG_CELL_SIDE, IMG_CELL_SIDE, IMG_CELL_SIDE);
       }
     }
@@ -147,7 +170,7 @@ $(function() {
    * @param {node} canvas - <canvas> html element
    * @param {string} filename - Name of the file that will be downloaded
    */
-  function downloadImageFromCanvas(canvas, fileName) {
+  function saveCanvasToImage(canvas, fileName) {
     let dataURL = canvas.toDataURL();
     let download = document.getElementById('save');
     download.href = dataURL;
@@ -212,11 +235,11 @@ $(function() {
       return
     }
 
-    // Clear existing palette if any and reset active color to default
-    clearPalette();
-
     // Apply
     makeGrid(height, width);
+
+    // Clear existing palette if any and reset active color to default
+    clearPalette();
 
     // Adjust view
     setup.fadeOut(FADE_DURATION, function() {
@@ -243,31 +266,19 @@ $(function() {
   // Listen event click on save button
   // And save picture to png
   saveButton.on('click', function() {
-    let colors = [];
-
-    $.each(grid.find('td'), function(index, cell) {
-      colors.push($(cell).css('background-color'));
-    });
-
-    let table = {
-      height: height,
-      width: width,
-      colors: colors
-    }
-
-    let canvas = drawCanvasFromTable(table);
-    downloadImageFromCanvas(canvas, 'image.png');
+    let canvas = getCanvasFromTable(grid);
+    saveCanvasToImage(canvas, 'image.png');
   });
 
   // Pick color from palette
   palette.on('click', 'div', function(e) {
-    let color = $(e.target).css('background-color');
-    let hex = $._farbtastic().rgbaToHex(color);
+    let bg = $(e.target).css('background-color');
+    let hex = $.farbtastic(color).rgbaToHex(bg);
 
     // Set active color
     currentColor = hex;
 
     // Update color picker
-    $._farbtastic().setColor(hex);
+    $.farbtastic(color, hex).setColor(hex);
   });
 });

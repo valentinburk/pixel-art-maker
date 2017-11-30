@@ -17,17 +17,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-jQuery.fn.farbtastic = function (callback) {
-  $.farbtastic(this, callback);
+jQuery.fn.farbtastic = function (callback, initialColor) {
+  $.farbtastic(this, callback, initialColor);
   return this;
 };
 
-jQuery.farbtastic = function (container, callback) {
+jQuery.farbtastic = function (container, callback, initialColor) {
   var container = $(container).get(0);
-  return container.farbtastic || (container.farbtastic = new jQuery._farbtastic(container, callback));
+  return container.farbtastic || (container.farbtastic = new jQuery._farbtastic(container, callback, initialColor));
 }
 
-jQuery._farbtastic = function (container, callback) {
+jQuery._farbtastic = function (container, callback, initialColor) {
   // Store farbtastic object
   var fb = this;
 
@@ -344,12 +344,10 @@ jQuery._farbtastic = function (container, callback) {
   $('*', e).mousedown(fb.mousedown);
 
     // Init color
-  fb.setColor('#fff');
+  fb.setColor(initialColor);
 
   // Set linked elements/callback
   if (callback) {
     fb.linkTo(callback);
   }
-
-  return fb;
 }
