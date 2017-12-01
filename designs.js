@@ -74,7 +74,7 @@ $(function() {
     }
 
     callback();
-  };
+  }
 
   /**
    * @description Sets color of element in the canvas
@@ -83,7 +83,7 @@ $(function() {
    */
   function setColor(element, color) {
     $(element).css('background-color', color);
-  };
+  }
 
   /**
    * @description Updates palette of recent colors
@@ -134,8 +134,8 @@ $(function() {
   function clearGrid() {
     grid.find('td').each(function() {
       setColor(this, '');
-    })
-  };
+    });
+  }
 
   /**
    * @description Serializes <table> html element to JSON object
@@ -169,7 +169,7 @@ $(function() {
       $.each($('#pixel-grid td'), function(i) {
         addColorToPalette(serialized.colors[i]);
         $(this).css('background-color', serialized.colors[i]);
-      })
+      });
 
       // Adjust view
       setup.fadeOut(FADE_DURATION, function() {
@@ -202,7 +202,7 @@ $(function() {
     }
 
     return canvas;
-  };
+  }
 
   /**
    * @description Downloads the png from <canvas> html element
@@ -214,27 +214,27 @@ $(function() {
     let download = document.getElementById('save');
     download.href = dataURL;
     download.download = fileName;
-  };
+  }
 
   // Listen event to show instructions
   showInstructions.on('click', function() {
     showInstructions.fadeOut(FADE_DURATION / 2, function() {
       instructions.fadeIn(FADE_DURATION / 2);
-    })
+    });
   });
 
   // Listen event to hide instructions
   closeInstructions.on('click', function() {
     instructions.fadeOut(FADE_DURATION / 2, function() {
       showInstructions.fadeIn(FADE_DURATION / 2);
-    })
+    });
   });
 
   // Set color by click
   grid.on('click', 'td', function(e) {
     setColor(this, currentColor);
     addColorToPalette(currentColor);
-  })
+  });
 
   // Reset color by right click
   grid.on('contextmenu', 'td', function(e) {
@@ -310,12 +310,12 @@ $(function() {
   shareButton.on('click', function() {
     ser = serializeTable(grid);
     resetButton.click();
-  })
+  });
 
   loadButton.on('click', function(e) {
     e.preventDefault();
     deserializeTable(ser);
-  })
+  });
 
   // Pick color from palette
   palette.on('click', 'div', function(e) {
@@ -328,4 +328,4 @@ $(function() {
     // Update color picker
     $.farbtastic(color, hex).setColor(hex);
   });
-});
+})
