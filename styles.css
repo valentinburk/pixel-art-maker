@@ -212,6 +212,30 @@ footer {
   margin: 20px 0;
 }
 
+.thumbnail {
+  display: inline-block;
+  background-color: #fff;
+  border: #fff 1px solid;
+  margin: 5px;
+  padding: 10px;
+}
+
+.thumbnail:hover {
+  border: #bbb 1px solid;
+}
+
+.thumbnail-img {
+  display: inline-block;
+  width: 150px;
+  height: 100px;
+  background: no-repeat center;
+  background-size: contain;
+}
+
+.thumbnail-date {
+    font-size: .6em;
+}
+
 /* External plugins adjustments */
 
 .farbtastic {

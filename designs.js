@@ -4,6 +4,7 @@ $(function() {
   const MIN_GRID_SIDE = 2;
   const MAX_GRID_SIDE = 100;
   const IMG_CELL_SIDE = 20;
+  const THUMBNAIL_CELL_SIDE = 5;
   const MAX_PALETTE_SIZE = 15;
 
   const DEFAULT_COLOR = '#3498db';
@@ -192,12 +193,12 @@ $(function() {
    * @param {object} table - JSON object representing grid state
    * @returns {node} - Returns the canvas element
    */
-  function getCanvasFromTable(table) {
+  function getCanvasFromTable(table, cellSide) {
     let serialized = serializeTable(table);
 
     let canvas = document.createElement('canvas');
-    canvas.height = serialized.height * IMG_CELL_SIDE;
-    canvas.width = serialized.width * IMG_CELL_SIDE;
+    canvas.height = serialized.height * cellSide;
+    canvas.width = serialized.width * cellSide;
 
     let ctx = canvas.getContext('2d');
 
@@ -205,7 +206,7 @@ $(function() {
     for (let h = 0; h < serialized.height; h++) {
       for (let w = 0; w < serialized.width; w++) {
         ctx.fillStyle = serialized.colors[position++];
-        ctx.fillRect(w * IMG_CELL_SIDE, h * IMG_CELL_SIDE, IMG_CELL_SIDE, IMG_CELL_SIDE);
+        ctx.fillRect(w * cellSide, h * cellSide, cellSide, cellSide);
       }
     }
 
@@ -312,7 +313,7 @@ $(function() {
   // Listen event click on save button
   // And save picture to png
   saveButton.on('click', function() {
-    let canvas = getCanvasFromTable(grid);
+    let canvas = getCanvasFromTable(grid, IMG_CELL_SIDE);
     saveCanvasToImage(canvas, 'image.png');
   });
 
@@ -321,11 +322,16 @@ $(function() {
     shareSection.fadeIn(FADE_DURATION);
     shareForm.fadeIn(FADE_DURATION);
 
+    // Add general data to form
     let serialized = serializeTable(grid);
     shareForm.find('input[name=name]').val('My Creative Art');
     shareForm.find('input[name=height]').val(serialized.height);
     shareForm.find('input[name=width]').val(serialized.width);
     shareForm.find('input[name=colors]').val(serialized.colors);
+
+    // Add thumbnail data to form
+    let img = getCanvasFromTable(grid, THUMBNAIL_CELL_SIDE);
+    shareForm.find('input[name=thumbnail]').val(img.toDataURL());
 
     shareForm.find('input[name=name]').focus();
   });

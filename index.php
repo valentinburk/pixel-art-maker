@@ -44,21 +44,38 @@
 
   <!-- Grid set up section -->
   <div id="setup">
-    <h2>Choose Grid Size</h2>
-    <form id="size-picker">
-      <div class="grid-parameter">
-        <h4>Height</h4>
-        <input type="number" id="input-height" name="height" min="1" value="15">
-      </div>
-      <i class="fa fa-times icon" aria-hidden="true"></i>
-      <div class="grid-parameter">
-        <h4>Width</h4>
-        <input type="number" id="input-width" name="width" min="1" value="40">
-      </div>
-      <p>
-        <button type="submit" class="button button-default">Submit</button>
-      </p>
-    </form>
+    <div>
+      <h2>Choose Grid Size</h2>
+      <form id="size-picker">
+        <div class="grid-parameter">
+          <h4>Height</h4>
+          <input type="number" id="input-height" name="height" min="1" value="15">
+        </div>
+        <i class="fa fa-times icon" aria-hidden="true"></i>
+        <div class="grid-parameter">
+          <h4>Width</h4>
+          <input type="number" id="input-width" name="width" min="1" value="40">
+        </div>
+        <p>
+          <button type="submit" class="button button-default">Submit</button>
+        </p>
+      </form>
+    </div>
+    <div>
+      <h2>Or Select One of Users Created Presets</h2>
+      <?php
+        foreach(glob('share/*.png') as $file) {
+          $date = DateTime::createFromFormat('Ymdhis', substr($file, 6, 14));
+          $name = str_replace('.png', '', substr($file, 21, strlen($file)));
+
+          echo '<div class="thumbnail">';
+          echo '<div class="thumbnail-img" style="background-image: url(\'' . $file . '\');"></div>';
+          echo '<div>' . $name . '</div>';
+          echo '<div class="thumbnail-date">' . $date -> format('Y-m-d h:i') . '</div>';
+          echo '</div>';
+        }
+      ?>
+    </div>
   </div>
 
   <!-- Drawing area section -->
@@ -79,7 +96,8 @@
       <input type="hidden" name="height">
       <input type="hidden" name="width">
       <input type="hidden" name="colors">
-      <button type="submit" class="button button-save">Share</a>
+      <input type="hidden" name="thumbnail">
+      <button type="submit" class="button button-save">Share</button>
     </form>
   </div>
 
