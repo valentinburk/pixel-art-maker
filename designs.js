@@ -18,25 +18,29 @@ $(function() {
   let width;
 
   // Page elements
+  let overlay = $('#overlay');
   let setup = $('#setup');
   let layout = $('#layout');
   let buttons = $('#control-buttons');
-  let form = $('#size-picker');
+  let sizePickerForm = $('#size-picker');
   let grid = $('#pixel-grid');
   let color = $('#color-picker');
   let palette = $('#palette');
 
+  // Instructions elements
   let showInstructions = $("#show-instructions");
   let closeInstructions = $("#close-instructions");
   let instructions = $("#instructions");
 
-  let clearButton = $('#clear');
-  let resetButton = $('#reset');
-  let saveButton = $('#save');
-  let shareButton = $('#share');
-  let loadButton = $('#load');
+  // Buttons
+  let clearButton = $('#clear-button');
+  let resetButton = $('#reset-button');
+  let saveButton = $('#save-button');
 
-  let ser;
+  // Share elements
+  let shareButton = $('#share-button');
+  let shareSection = $('#share-section');
+  let shareForm = $('#share-form');
 
   /**
    * @description Initializes working space. Must be called before any other calls
@@ -44,6 +48,9 @@ $(function() {
   function init() {
     // Clears everything from any previous grid
     grid.children().remove();
+
+    // Clear the share form
+    shareForm.find('input').val('');
 
     // Set active color to default
     currentColor = DEFAULT_COLOR;
@@ -139,7 +146,7 @@ $(function() {
 
   /**
    * @description Serializes <table> html element to JSON object
-   * @param {object} - <table> html element
+   * @param {object} table - <table> html element
    * @returns {object} - Returns <table> serialized to JSON object
    */
   function serializeTable(table) {
@@ -150,6 +157,7 @@ $(function() {
     });
 
     let serialized = {
+      name: 'hardcoded',
       height: height,
       width: width,
       colors: colors
@@ -160,7 +168,7 @@ $(function() {
 
   /**
    * @description Deserializes JSON object into <table> html element
-   * @param {object} - JSON object containing serialized <table>
+   * @param {object} serialized - JSON object containing serialized <table>
    */
   function deserializeTable(serialized) {
     init();
@@ -211,7 +219,7 @@ $(function() {
    */
   function saveCanvasToImage(canvas, fileName) {
     let dataURL = canvas.toDataURL();
-    let download = document.getElementById('save');
+    let download = document.getElementById('save-button');
     download.href = dataURL;
     download.download = fileName;
   }
@@ -256,7 +264,7 @@ $(function() {
   });
 
   // Apply canvas size set by user
-  form.submit(function(e) {
+  sizePickerForm.submit(function(e) {
     e.preventDefault();
 
     init();
@@ -294,6 +302,7 @@ $(function() {
   // Delete current drawing area and let user to
   // set his new canvas to draw
   resetButton.on('click', function() {
+    overlay.click();
     buttons.fadeOut(FADE_DURATION);
     layout.fadeOut(FADE_DURATION, function() {
       setup.fadeIn(FADE_DURATION);
@@ -308,13 +317,65 @@ $(function() {
   });
 
   shareButton.on('click', function() {
-    ser = serializeTable(grid);
-    resetButton.click();
+    overlay.fadeIn(FADE_DURATION);
+    shareSection.fadeIn(FADE_DURATION);
+    shareForm.fadeIn(FADE_DURATION);
+
+    let serialized = serializeTable(grid);
+    shareForm.find('input[name=name]').val('My Creative Art');
+    shareForm.find('input[name=height]').val(serialized.height);
+    shareForm.find('input[name=width]').val(serialized.width);
+    shareForm.find('input[name=colors]').val(serialized.colors);
+
+    shareForm.find('input[name=name]').focus();
   });
 
-  loadButton.on('click', function(e) {
+  shareForm.on('submit', function(e) {
     e.preventDefault();
-    deserializeTable(ser);
+
+    $.post('save.php', $(this).serialize(), function() {
+      shareForm.fadeOut(FADE_DURATION, function() {
+        let block = $('<div></div>')
+        $(block).css('display', 'none');
+
+        let buttons = $('<div></div>');
+        let startNewButton = $('<a class="button button-save">Start New</a>');
+        let continueButton = $('<a class="button button-default">Continue Drawing</a>');
+
+        startNewButton.on('click', function() {
+          resetButton.click();
+          setTimeout(function() {
+            block.remove();
+          }, 1000);
+        });
+
+        continueButton.on('click', function() {
+          overlay.click();
+          setTimeout(function() {
+            block.remove();
+          }, 1000);
+        });
+
+        buttons.append(startNewButton);
+        buttons.append(continueButton);
+
+        buttons.find('a')
+          .css('margin', '20px 5px')
+          .css('display', 'inline-block');
+
+        block.append('<h2>Your Art has been successfully uploaded</h2>');
+        block.append(buttons);
+        shareSection.append(block);
+
+        block.fadeIn(FADE_DURATION);
+      });
+    });
+  });
+
+  // when click on overlay, close all popups
+  overlay.on('click', function() {
+    overlay.fadeOut(FADE_DURATION);
+    $('.popup').fadeOut(FADE_DURATION);
   });
 
   // Pick color from palette

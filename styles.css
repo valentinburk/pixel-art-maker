@@ -91,7 +91,49 @@ footer {
 
 #layout {
   margin-bottom: 100px;
+  display: none;
 }
+
+.overlay-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .6);
+  z-index: 1;
+  display: none;
+}
+
+.main-feature {
+  color: #3498db;
+  font-weight: 800;
+}
+
+.icon {
+  padding: 10px;
+  font-size: 25px;
+}
+
+/* All popups */
+
+.popup {
+  position: absolute;
+  background-color: #fff;
+  margin: 0 auto;
+  top: 20%;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: none;
+  padding: 20px;
+}
+
+.grid-parameter {
+  display: inline-block;
+}
+
+/* Instructions section */
 
 .instructions,
 .instructions-toggle {
@@ -110,20 +152,6 @@ footer {
   right: 30px;
   color: #bbb;
   cursor: pointer;
-}
-
-.main-feature {
-  color: #3498db;
-  font-weight: 800;
-}
-
-.icon {
-  padding: 10px;
-  font-size: 25px;
-}
-
-.grid-parameter {
-  display: inline-block;
 }
 
 /* Buttons */
@@ -154,7 +182,9 @@ footer {
   background-color: #03D77C;
 }
 
-.palette {
+/* Palette styles */
+
+#palette {
   display: inline-table;
   border-spacing: 5px;
 }
@@ -165,6 +195,21 @@ footer {
   height: 30px;
   background-color: #3498db;
   cursor: pointer;
+}
+
+/* Share feature section */
+
+#share-section {
+  width: 500px;
+}
+
+#share-form input {
+  font-family: inherit;
+  font-size: inherit;
+  text-align: center;
+  width: 450px;
+  height: 40px;
+  margin: 20px 0;
 }
 
 /* External plugins adjustments */
