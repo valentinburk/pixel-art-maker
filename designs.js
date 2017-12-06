@@ -10,6 +10,32 @@ $(function() {
   const DEFAULT_COLOR = '#3498db';
   const PLACEHOLDER_COLOR = '#e1e1e1';
 
+  // Page elements
+  const overlay = $('#overlay');
+  const setup = $('#setup');
+  const layout = $('#layout');
+  const buttons = $('#control-buttons');
+  const sizePickerForm = $('#size-picker');
+  const grid = $('#pixel-grid');
+  const color = $('#color-picker');
+  const palette = $('#palette');
+  const thumbnails = $('#thumbnails');
+
+  // Instructions elements
+  const showInstructions = $("#show-instructions");
+  const closeInstructions = $("#close-instructions");
+  const instructions = $("#instructions");
+
+  // Buttons
+  const clearButton = $('#clear-button');
+  const resetButton = $('#reset-button');
+  const saveButton = $('#save-button');
+
+  // Share elements
+  const shareButton = $('#share-button');
+  const shareSection = $('#share-section');
+  const shareForm = $('#share-form');
+
   // Palette
   let currentColor;
   let paletteArray;
@@ -17,32 +43,6 @@ $(function() {
   // Grid size;
   let height;
   let width;
-
-  // Page elements
-  let overlay = $('#overlay');
-  let setup = $('#setup');
-  let layout = $('#layout');
-  let buttons = $('#control-buttons');
-  let sizePickerForm = $('#size-picker');
-  let grid = $('#pixel-grid');
-  let color = $('#color-picker');
-  let palette = $('#palette');
-  let thumbnails = $('#thumbnails');
-
-  // Instructions elements
-  let showInstructions = $("#show-instructions");
-  let closeInstructions = $("#close-instructions");
-  let instructions = $("#instructions");
-
-  // Buttons
-  let clearButton = $('#clear-button');
-  let resetButton = $('#reset-button');
-  let saveButton = $('#save-button');
-
-  // Share elements
-  let shareButton = $('#share-button');
-  let shareSection = $('#share-section');
-  let shareForm = $('#share-form');
 
   /**
    * @description Initializes working space. Must be called before any other calls
