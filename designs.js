@@ -27,6 +27,7 @@ $(function() {
   let grid = $('#pixel-grid');
   let color = $('#color-picker');
   let palette = $('#palette');
+  let thumbnails = $('#thumbnails');
 
   // Instructions elements
   let showInstructions = $("#show-instructions");
@@ -148,6 +149,7 @@ $(function() {
   /**
    * @description Serializes <table> html element to JSON object
    * @param {object} table - <table> html element
+   * @param {string} name - Name of the Art
    * @returns {object} - Returns <table> serialized to JSON object
    */
   function serializeTable(table) {
@@ -158,7 +160,6 @@ $(function() {
     });
 
     let serialized = {
-      name: 'hardcoded',
       height: height,
       width: width,
       colors: colors
@@ -174,10 +175,13 @@ $(function() {
   function deserializeTable(serialized) {
     init();
     makeGrid(serialized.height, serialized.width, function() {
+        height = serialized.height;
+        width = serialized.width;
 
       $.each($('#pixel-grid td'), function(i) {
-        addColorToPalette(serialized.colors[i]);
-        $(this).css('background-color', serialized.colors[i]);
+        let hex = $.farbtastic(color).rgbaToHex(serialized.colors[i]);
+        addColorToPalette(hex);
+        $(this).css('background-color', hex);
       });
 
       // Adjust view
@@ -317,6 +321,7 @@ $(function() {
     saveCanvasToImage(canvas, 'image.png');
   });
 
+  // Open share form by click on Share button
   shareButton.on('click', function() {
     overlay.fadeIn(FADE_DURATION);
     shareSection.fadeIn(FADE_DURATION);
@@ -325,9 +330,7 @@ $(function() {
     // Add general data to form
     let serialized = serializeTable(grid);
     shareForm.find('input[name=name]').val('My Creative Art');
-    shareForm.find('input[name=height]').val(serialized.height);
-    shareForm.find('input[name=width]').val(serialized.width);
-    shareForm.find('input[name=colors]').val(serialized.colors);
+    shareForm.find('input[name=data]').val(JSON.stringify(serialized));
 
     // Add thumbnail data to form
     let img = getCanvasFromTable(grid, THUMBNAIL_CELL_SIDE);
@@ -336,6 +339,7 @@ $(function() {
     shareForm.find('input[name=name]').focus();
   });
 
+  // Send data to server by submitting share form
   shareForm.on('submit', function(e) {
     e.preventDefault();
 
@@ -349,10 +353,7 @@ $(function() {
         let continueButton = $('<a class="button button-default">Continue Drawing</a>');
 
         startNewButton.on('click', function() {
-          resetButton.click();
-          setTimeout(function() {
-            block.remove();
-          }, 1000);
+          location.reload(true);
         });
 
         continueButton.on('click', function() {
@@ -377,6 +378,14 @@ $(function() {
       });
     });
   });
+
+  // Load art by click on thumbnail
+  thumbnails.on('click', '.thumbnail', function(e) {
+    let url = $(this).attr('data-href');
+    $.get(url, function(response) {
+       deserializeTable(JSON.parse(response));
+    });
+  })
 
   // when click on overlay, close all popups
   overlay.on('click', function() {

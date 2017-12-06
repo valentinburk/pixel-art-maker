@@ -38,7 +38,8 @@
       <li class="main-feature">Hold mouse down and draw smoothly</li>
       <li>Click secondary mouse button to erase</li>
       <li class="main-feature">Hold secondary button to erase smoothly</li>
-      <li class="main-feature">NEW! Save your drawings to PNG image</li>
+      <li class="main-feature">Save your drawings to PNG image</li>
+      <li class="main-feature">Share your art!</li>
     </ul>
   </div>
 
@@ -57,18 +58,23 @@
           <input type="number" id="input-width" name="width" min="1" value="40">
         </div>
         <p>
-          <button type="submit" class="button button-default">Submit</button>
+          <button type="submit" class="button button-default">Start New Drawing</button>
         </p>
       </form>
     </div>
-    <div>
+    <div id="thumbnails">
       <h2>Or Select One of Users Created Presets</h2>
       <?php
-        foreach(glob('share/*.png') as $file) {
-          $date = DateTime::createFromFormat('Ymdhis', substr($file, 6, 14));
-          $name = str_replace('.png', '', substr($file, 21, strlen($file)));
+        $files = glob('share/*.png');
+        usort($files, create_function('$a,$b', 'return filemtime($b) - filemtime($a);'));
 
-          echo '<div class="thumbnail">';
+        foreach($files as $file) {
+          $filename = pathinfo($file)['filename'];
+
+          $date = DateTime::createFromFormat('Ymdhis', substr($filename, 0, 14));
+          $name = substr($filename, 15, strlen($file));
+
+          echo '<div class="thumbnail" data-href="share/' . $filename . '.save">';
           echo '<div class="thumbnail-img" style="background-image: url(\'' . $file . '\');"></div>';
           echo '<div>' . $name . '</div>';
           echo '<div class="thumbnail-date">' . $date -> format('Y-m-d h:i') . '</div>';
@@ -93,9 +99,7 @@
     <form id="share-form">
       <h2>Please, type name of your Art</h2>
       <input type="text" name="name">
-      <input type="hidden" name="height">
-      <input type="hidden" name="width">
-      <input type="hidden" name="colors">
+      <input type="hidden" name="data">
       <input type="hidden" name="thumbnail">
       <button type="submit" class="button button-save">Share</button>
     </form>

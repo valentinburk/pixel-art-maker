@@ -222,6 +222,7 @@ footer {
 
 .thumbnail:hover {
   border: #bbb 1px solid;
+  cursor: pointer;
 }
 
 .thumbnail-img {

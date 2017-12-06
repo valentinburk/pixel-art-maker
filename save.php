@@ -4,7 +4,7 @@
     $name = $now -> format('Ymdhis') . '_' . $_POST["name"];
 
     // Save table content
-    file_put_contents('share/' . $name . '.save', file_get_contents("php://input"));
+    file_put_contents('share/' . $name . '.save', $_POST["data"]);
 
     // Save thumbnail png
     $data = substr($_POST['thumbnail'], strpos($_POST['thumbnail'], ",") + 1);
